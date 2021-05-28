@@ -166,7 +166,7 @@ function staticActionGenerators(module, modOpt, statics) {
     });
 }
 
-function registerDynamicModule(dynamicModule, modOpt) {
+function registerDynamicModule(module, modOpt) {
     if (!modOpt.name) {
         throw new Error('Name of module not provided in decorator options');
     }
@@ -174,14 +174,18 @@ function registerDynamicModule(dynamicModule, modOpt) {
         throw new Error('Store not provided in decorator options when using dynamic option');
     }
     if (import.meta.hot) {
-        if (modOpt.store.hasModule(modOpt.name)) { // 如果遇到重复模块直接刷新页面
-            import.meta.hot.invalidate();
+        if (modOpt.store.hasModule(modOpt.name)) { // 如果遇到重复模块则热更新
+            modOpt.store.hotUpdate({
+                modules: {
+                    [modOpt.name]: module
+                }
+            });
             return;
         }
-        modOpt.store.registerModule(modOpt.name, dynamicModule, { preserveState: modOpt.preserveState || false });
+        modOpt.store.registerModule(modOpt.name, module, { preserveState: modOpt.preserveState || false });
     }
     else {
-        modOpt.store.registerModule(modOpt.name, dynamicModule, { preserveState: modOpt.preserveState || false });
+        modOpt.store.registerModule(modOpt.name, module, { preserveState: modOpt.preserveState || false });
     }
 }
 function addGettersToModule(targetModule, srcModule) {
