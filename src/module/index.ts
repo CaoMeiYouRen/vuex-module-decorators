@@ -9,7 +9,7 @@ import {
   staticStateGenerator
 } from './staticGenerators'
 
-function registerDynamicModule<S>(module: Mod<S, any>, modOpt: DynamicModuleOptions) {
+function registerDynamicModule<S>(dynamicModule: Mod<S, any>, modOpt: DynamicModuleOptions) {
   if (!modOpt.name) {
     throw new Error('Name of module not provided in decorator options')
   }
@@ -17,18 +17,18 @@ function registerDynamicModule<S>(module: Mod<S, any>, modOpt: DynamicModuleOpti
   if (!modOpt.store) {
     throw new Error('Store not provided in decorator options when using dynamic option')
   }
-  if (import.meta.hot) {
+  if (import.meta.hot || module.hot) { // vite 或 webpack 的热更新
     if (modOpt.store.hasModule(modOpt.name)) { // 如果遇到重复模块则热更新
       modOpt.store.hotUpdate({
         modules: {
-          [modOpt.name]: module
+          [modOpt.name]: dynamicModule
         }
       })
       return
     }
-    modOpt.store.registerModule(modOpt.name, module, { preserveState: modOpt.preserveState || false });
+    modOpt.store.registerModule(modOpt.name, dynamicModule, { preserveState: modOpt.preserveState || false });
   } else {
-    modOpt.store.registerModule(modOpt.name, module, { preserveState: modOpt.preserveState || false });
+    modOpt.store.registerModule(modOpt.name, dynamicModule, { preserveState: modOpt.preserveState || false });
   }
 }
 

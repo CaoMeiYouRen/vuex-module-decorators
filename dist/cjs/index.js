@@ -170,26 +170,26 @@ function staticActionGenerators(module, modOpt, statics) {
     });
 }
 
-function registerDynamicModule(module, modOpt) {
+function registerDynamicModule(dynamicModule, modOpt) {
     if (!modOpt.name) {
         throw new Error('Name of module not provided in decorator options');
     }
     if (!modOpt.store) {
         throw new Error('Store not provided in decorator options when using dynamic option');
     }
-    if (undefined) {
+    if (undefined || module.hot) { // vite 或 webpack 的热更新
         if (modOpt.store.hasModule(modOpt.name)) { // 如果遇到重复模块则热更新
             modOpt.store.hotUpdate({
                 modules: {
-                    [modOpt.name]: module
+                    [modOpt.name]: dynamicModule
                 }
             });
             return;
         }
-        modOpt.store.registerModule(modOpt.name, module, { preserveState: modOpt.preserveState || false });
+        modOpt.store.registerModule(modOpt.name, dynamicModule, { preserveState: modOpt.preserveState || false });
     }
     else {
-        modOpt.store.registerModule(modOpt.name, module, { preserveState: modOpt.preserveState || false });
+        modOpt.store.registerModule(modOpt.name, dynamicModule, { preserveState: modOpt.preserveState || false });
     }
 }
 function addGettersToModule(targetModule, srcModule) {

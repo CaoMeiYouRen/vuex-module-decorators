@@ -19,7 +19,7 @@
     "strictNullChecks": true,
     "types": [
       "vite/client",
-      "webpack"
+      "webpack-env"
     ],
   },
   "include": [
