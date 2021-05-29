@@ -177,8 +177,10 @@ function registerDynamicModule(dynamicModule, modOpt) {
     if (!modOpt.store) {
         throw new Error('Store not provided in decorator options when using dynamic option');
     }
-    if (undefined || module.hot) { // vite 或 webpack 的热更新
-        if (modOpt.store.hasModule(modOpt.name)) { // 如果遇到重复模块则热更新
+    if (undefined || module.hot) {
+        // Hot update of vite or webpack. vite 或 webpack 的热更新
+        if (modOpt.store.hasModule(modOpt.name)) {
+            // Hot update if duplicate modules are encountered. 如果遇到重复模块则热更新
             modOpt.store.hotUpdate({
                 modules: {
                     [modOpt.name]: dynamicModule
@@ -186,11 +188,14 @@ function registerDynamicModule(dynamicModule, modOpt) {
             });
             return;
         }
-        modOpt.store.registerModule(modOpt.name, dynamicModule, { preserveState: modOpt.preserveState || false });
+        modOpt.store.registerModule(modOpt.name, dynamicModule, {
+            preserveState: modOpt.preserveState || false
+        });
+        return;
     }
-    else {
-        modOpt.store.registerModule(modOpt.name, dynamicModule, { preserveState: modOpt.preserveState || false });
-    }
+    modOpt.store.registerModule(modOpt.name, dynamicModule, {
+        preserveState: modOpt.preserveState || false
+    });
 }
 function addGettersToModule(targetModule, srcModule) {
     Object.getOwnPropertyNames(srcModule.prototype).forEach((funcName) => {

@@ -17,8 +17,10 @@ function registerDynamicModule<S>(dynamicModule: Mod<S, any>, modOpt: DynamicMod
   if (!modOpt.store) {
     throw new Error('Store not provided in decorator options when using dynamic option')
   }
-  if (import.meta.hot || module.hot) { // vite 或 webpack 的热更新
-    if (modOpt.store.hasModule(modOpt.name)) { // 如果遇到重复模块则热更新
+  if (import.meta.hot || module.hot) {
+    // Hot update of vite or webpack. vite 或 webpack 的热更新
+    if (modOpt.store.hasModule(modOpt.name)) {
+      // Hot update if duplicate modules are encountered. 如果遇到重复模块则热更新
       modOpt.store.hotUpdate({
         modules: {
           [modOpt.name]: dynamicModule
@@ -26,10 +28,14 @@ function registerDynamicModule<S>(dynamicModule: Mod<S, any>, modOpt: DynamicMod
       })
       return
     }
-    modOpt.store.registerModule(modOpt.name, dynamicModule, { preserveState: modOpt.preserveState || false });
-  } else {
-    modOpt.store.registerModule(modOpt.name, dynamicModule, { preserveState: modOpt.preserveState || false });
+    modOpt.store.registerModule(modOpt.name, dynamicModule, {
+      preserveState: modOpt.preserveState || false
+    })
+    return
   }
+  modOpt.store.registerModule(modOpt.name, dynamicModule, {
+    preserveState: modOpt.preserveState || false
+  })
 }
 
 function addGettersToModule<S>(
