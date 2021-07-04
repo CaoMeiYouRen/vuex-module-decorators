@@ -17,7 +17,7 @@ function registerDynamicModule<S>(dynamicModule: Mod<S, any>, modOpt: DynamicMod
   if (!modOpt.store) {
     throw new Error('Store not provided in decorator options when using dynamic option')
   }
-  if (import.meta.hot) {
+  if (module.hot) {
     // Hot update of vite. vite 的热更新
     if (modOpt.store.hasModule(modOpt.name)) {
       // Hot update if duplicate modules are encountered. 如果遇到重复模块则热更新

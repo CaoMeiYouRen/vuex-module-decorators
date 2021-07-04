@@ -25,25 +25,6 @@ function getModuleName(module) {
 }
 
 class VuexModule {
-    /*
-     * To use with `extends Class` syntax along with decorators
-     */
-    static namespaced;
-    static state;
-    static getters;
-    static actions;
-    static mutations;
-    static modules;
-    /*
-     * To use with `new VuexModule(<ModuleOptions>{})` syntax
-     */
-    modules;
-    namespaced;
-    getters;
-    state;
-    mutations;
-    actions;
-    context;
     constructor(module) {
         this.actions = module.actions;
         this.mutations = module.mutations;
@@ -173,7 +154,7 @@ function registerDynamicModule(dynamicModule, modOpt) {
     if (!modOpt.store) {
         throw new Error('Store not provided in decorator options when using dynamic option');
     }
-    if (import.meta.hot) {
+    if (module.hot) {
         // Hot update of vite. vite 的热更新
         if (modOpt.store.hasModule(modOpt.name)) {
             // Hot update if duplicate modules are encountered. 如果遇到重复模块则热更新
